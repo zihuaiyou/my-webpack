@@ -15,7 +15,9 @@ module.exports = {
         rules: [
             {
                 test: /\.css$/,  //检测以css结尾的文件(正则)
+                //loader:"xxx" 只能使用一个loader
                 use: [ //使用loader, 需要按顺序（从下往上执行）
+                // use 可以使用多个loader
                     'style-loader', //将js中的css以style标签的形式添加到html中
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
                 ]
@@ -27,7 +29,15 @@ module.exports = {
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
                     'less-loader'//将less编译成css文件
                 ]
-            }
+            },
+            {
+                test: /\.s[ac]ss$/,  //检测以sass或scss结尾的文件(正则)
+                use: [ //使用loader, 需要按顺序（从下往上执行）
+                    'style-loader', //将js中的css以style标签的形式添加到html中
+                    'css-loader', //将css资源编译呈commonjs模块形式添加到js中
+                    'sass-loader'//将sass或scss编译成css文件
+                ]
+            },
         ]
     },
     // 插件
