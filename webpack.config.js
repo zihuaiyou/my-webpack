@@ -17,7 +17,15 @@ module.exports = {
                 test: /\.css$/,  //检测以css结尾的文件(正则)
                 use: [ //使用loader, 需要按顺序（从下往上执行）
                     'style-loader', //将js中的css以style标签的形式添加到html中
-                    'css-loader' //将css资源编译呈commonjs模块形式添加到js中
+                    'css-loader', //将css资源编译呈commonjs模块形式添加到js中
+                ]
+            },
+            {
+                test: /\.less$/,  //检测以less结尾的文件(正则)
+                use: [ //使用loader, 需要按顺序（从下往上执行）
+                    'style-loader', //将js中的css以style标签的形式添加到html中
+                    'css-loader', //将css资源编译呈commonjs模块形式添加到js中
+                    'less-loader'//将less编译成css文件
                 ]
             }
         ]
