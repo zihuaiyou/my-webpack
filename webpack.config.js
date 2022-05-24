@@ -38,6 +38,13 @@ module.exports = {
                     'sass-loader'//将sass或scss编译成css文件
                 ]
             },
+            {
+                // webpack4使用fileloader和urlloader处理图片
+                // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
+                // base64:优点：减少网络请求； 缺点：会增加图片的体积
+                test: /\.(png|jpe?g|webp|gif)$/,  //检测以sass或scss结尾的文件(正则)
+                type:'asset'
+            },
         ]
     },
     // 插件
