@@ -8,7 +8,9 @@ module.exports = {
         // 输出文件目录
         path: path.resolve(__dirname, "dist"), //绝对目录(所有文件)
         // 输出文件名
-        filename: "static/main.js" //js入口文件的目录
+        filename: "static/main.js", //js入口文件的目录
+        // 自动清空上次打包的文件
+        clean: true
     },
     // 配置loader
     module: {
@@ -18,7 +20,7 @@ module.exports = {
                 test: /\.css$/,  //检测以css结尾的文件(正则)
                 //loader:"xxx" 只能使用一个loader
                 use: [ //使用loader, 需要按顺序（从下往上执行）
-                // use 可以使用多个loader
+                    // use 可以使用多个loader
                     'style-loader', //将js中的css以style标签的形式添加到html中
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
                 ]
@@ -43,16 +45,26 @@ module.exports = {
                 // webpack4使用fileloader和urlloader处理图片
                 // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
                 // base64:优点：减少网络请求； 缺点：会增加图片的体积
-                test: /\.(png|jpe?g|webp|gif)$/,  //检测以sass或scss结尾的文件(正则)
-                type:'asset',
-                generator:{ 
+                test: /\.(png|jpe?g|webp|gif)$/,  //检测以图片扩展名结尾的文件(正则)
+                type: 'asset',  //使低于指定大小的图片转化为base64格式
+                generator: {
                     // 控制图片资源生成路径
                     // [hash:8] 文件名取hash值，取前8位
                     // [ext]取文件之前的扩展名
                     // [query]取之前的查询参数
-                    filename:"static/imgs/[hash:5][ext][query]"
+                    filename: "static/imgs/[hash:5][ext][query]"
                 }
             },
+            {
+                // webpack4使用fileloader和urlloader处理图片
+                // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
+                // base64:优点：减少网络请求； 缺点：会增加图片的体积
+                test: /\.(ttf|woff2?)$/,
+                type: 'asset/resource', //原样打包
+                generator: {
+                    filename: "static/fonts/[hash:5][ext][query]"
+                }
+            }
         ]
     },
     // 插件
