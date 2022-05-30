@@ -2,6 +2,7 @@ const path = require('path')
 // 使用插件需要引用
 //webpack5 使用插件处理eslint(webpack4使用loader)
 const EslintWebpackPlugin = require('eslint-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     // 入口文件
     entry: "./src/main.js", //相对目录
@@ -88,6 +89,11 @@ module.exports = {
         new EslintWebpackPlugin({
             // 指定检查文件的目录
             context:path.resolve(__dirname,'src')
+        }),
+        new HtmlWebpackPlugin({
+            // 创建以public/index.html为模板的html文件
+            //创建的html结构与模板一致，并且会自动引入打包好的js文件
+            template:path.resolve(__dirname,'public/index.html')
         })
     ],
     // 模式
