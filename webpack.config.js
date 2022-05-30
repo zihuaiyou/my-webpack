@@ -70,9 +70,9 @@ module.exports = {
             },
             {
                 // babel 使用loader
-                test:/\.js$/,
-                exclude:/node_modules/, //不处理node_modules文件
-                loader:'babel-loader',
+                test: /\.js$/,
+                exclude: /node_modules/, //不处理node_modules文件
+                loader: 'babel-loader',
                 /**
                  * babel配置可以直接在下面写，也可以在外部文件写
                  */
@@ -88,14 +88,21 @@ module.exports = {
         // 插件是构造函数，需要new
         new EslintWebpackPlugin({
             // 指定检查文件的目录
-            context:path.resolve(__dirname,'src')
+            context: path.resolve(__dirname, 'src')
         }),
         new HtmlWebpackPlugin({
             // 创建以public/index.html为模板的html文件
             //创建的html结构与模板一致，并且会自动引入打包好的js文件
-            template:path.resolve(__dirname,'public/index.html')
+            template: path.resolve(__dirname, 'public/index.html')
         })
     ],
+    // 配置开发服务器（打包命令为npx webpack serve）
+    // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包
+    devServer: {
+        host: 'localhost',
+        port: '3000',
+        open: true
+    },
     // 模式
     mode: "development"
 }
