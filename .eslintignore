@@ -1,0 +1,2 @@
+# 使eslint不检查dist文件夹
+dist

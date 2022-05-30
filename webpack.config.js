@@ -1,5 +1,7 @@
 const path = require('path')
-const { Generator } = require('webpack')
+// 使用插件需要引用
+//webpack5 使用插件处理eslint(webpack4使用loader)
+const EslintWebpackPlugin = require('eslint-webpack-plugin');
 module.exports = {
     // 入口文件
     entry: "./src/main.js", //相对目录
@@ -60,15 +62,34 @@ module.exports = {
                 // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
                 // base64:优点：减少网络请求； 缺点：会增加图片的体积
                 test: /\.(ttf|woff2?)$/,
-                type: 'asset/resource', //原样打包
+                type: 'asset/resource', //原样打包(处理字体图标、音视频文件等其他资源)
                 generator: {
-                    filename: "static/fonts/[hash:5][ext][query]"
+                    filename: "static/media/[hash:5][ext][query]"
                 }
+            },
+            {
+                // babel 使用loader
+                test:/\.js$/,
+                exclude:/node_modules/, //不处理node_modules文件
+                loader:'babel-loader',
+                /**
+                 * babel配置可以直接在下面写，也可以在外部文件写
+                 */
+                // options:{
+                //     // 使用babel插件
+                //     presets:["@babel/preset-env"] //允许使用最近的js
+                // }
             }
         ]
     },
     // 插件
-    plugins: [],
+    plugins: [
+        // 插件是构造函数，需要new
+        new EslintWebpackPlugin({
+            // 指定检查文件的目录
+            context:path.resolve(__dirname,'src')
+        })
+    ],
     // 模式
     mode: "development"
 }
