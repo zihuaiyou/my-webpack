@@ -4,8 +4,8 @@
 const path = require('path')
 // 使用插件需要引用
 //webpack5 使用插件处理eslint(webpack4使用loader)
-const EslintWebpackPlugin = require('eslint-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const EslintWebpackPlugin = require('eslint-webpack-plugin');//检查代码格式
+const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入打包好的js文件
 module.exports = {
     // 入口文件
     // 开发模式下相对目录不需要改变（执行配置文件时是在根目录下执行的）
@@ -14,7 +14,7 @@ module.exports = {
     output: {
         // 输出文件目录
         // path: path.resolve(__dirname, "dist"), //绝对目录(所有文件)
-        path:undefined,//开发模式下，因为使用了devServer,不需要输出打包文件
+        path: undefined,//开发模式下，因为使用了devServer,不需要输出打包文件
         // 输出文件名
         filename: "static/main.js", //js入口文件的目录
         // 自动清空上次打包的文件
@@ -99,7 +99,7 @@ module.exports = {
             // 创建以public/index.html为模板的html文件
             //创建的html结构与模板一致，并且会自动引入打包好的js文件
             template: path.resolve(__dirname, '../public/index.html')
-        })
+        }),
     ],
     // 配置开发服务器（打包命令为npx webpack serve）
     // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包

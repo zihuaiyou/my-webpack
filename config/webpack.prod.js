@@ -1,8 +1,9 @@
 const path = require('path')
 // 使用插件需要引用
 //webpack5 使用插件处理eslint(webpack4使用loader)
-const EslintWebpackPlugin = require('eslint-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const EslintWebpackPlugin = require('eslint-webpack-plugin');//检查代码格式
+const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入打包好的js文件
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');//使html通过link标签的形式引入单独的css文件
 module.exports = {
     // 入口文件
     entry: "./src/main.js", //相对目录
@@ -25,14 +26,15 @@ module.exports = {
                 //loader:"xxx" 只能使用一个loader
                 use: [ //使用loader, 需要按顺序（从下往上执行）
                     // use 可以使用多个loader
-                    'style-loader', //将js中的css以style标签的形式添加到html中
+                    // 'style-loader', //将js中的css以style标签的形式添加到html中
+                    MiniCssExtractPlugin.loader, //不再使用style-loader
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
                 ]
             },
             {
                 test: /\.less$/,  //检测以less结尾的文件(正则)
                 use: [ //使用loader, 需要按顺序（从下往上执行）
-                    'style-loader', //将js中的css以style标签的形式添加到html中
+                    MiniCssExtractPlugin.loader,
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
                     'less-loader'//将less编译成css文件
                 ]
@@ -40,7 +42,7 @@ module.exports = {
             {
                 test: /\.s[ac]ss$/,  //检测以sass或scss结尾的文件(正则)
                 use: [ //使用loader, 需要按顺序（从下往上执行）
-                    'style-loader', //将js中的css以style标签的形式添加到html中
+                    MiniCssExtractPlugin.loader,
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
                     'sass-loader'//将sass或scss编译成css文件
                 ]
@@ -95,7 +97,13 @@ module.exports = {
             // 创建以public/index.html为模板的html文件
             //创建的html结构与模板一致，并且会自动引入打包好的js文件
             template: path.resolve(__dirname, '../public/index.html')
-        })
+        }),
+        new MiniCssExtractPlugin(
+            {
+                // 指定css文件输出目录
+                filename: 'static/css/style.css'
+            }
+        )
     ],
     // 配置开发服务器（打包命令为npx webpack serve）
     // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包
