@@ -9,7 +9,8 @@ module.exports = {
     // 输出
     output: {
         // 输出文件目录
-        path: path.resolve(__dirname, "dist"), //绝对目录(所有文件)
+        // 生产模式需要输出打包文件
+        path: path.resolve(__dirname, "../dist"), //绝对目录(所有文件)
         // 输出文件名
         filename: "static/main.js", //js入口文件的目录
         // 自动清空上次打包的文件
@@ -88,21 +89,24 @@ module.exports = {
         // 插件是构造函数，需要new
         new EslintWebpackPlugin({
             // 指定检查文件的目录
-            context: path.resolve(__dirname, 'src')
+            context: path.resolve(__dirname, '../src')
         }),
         new HtmlWebpackPlugin({
             // 创建以public/index.html为模板的html文件
             //创建的html结构与模板一致，并且会自动引入打包好的js文件
-            template: path.resolve(__dirname, 'public/index.html')
+            template: path.resolve(__dirname, '../public/index.html')
         })
     ],
     // 配置开发服务器（打包命令为npx webpack serve）
     // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包
-    devServer: {
-        host: 'localhost',
-        port: '3000',
-        open: true
-    },
+    /**
+     * 生产模式无需配置开发服务器
+     */
+    // devServer: {
+    //     host: 'localhost',
+    //     port: '3000',
+    //     open: true
+    // },
     // 模式
-    mode: "development"
+    mode: "production"
 }
