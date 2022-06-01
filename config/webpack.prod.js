@@ -4,6 +4,7 @@ const path = require('path')
 const EslintWebpackPlugin = require('eslint-webpack-plugin');//检查代码格式
 const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入打包好的js文件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');//使html通过link标签的形式引入单独的css文件
+const CssMinimizerPlugin  = require('css-minimizer-webpack-plugin');//压缩css
 
 /**
  * 封装一个合并处理样式的loader的函数
@@ -113,7 +114,8 @@ module.exports = {
                 // 指定css文件输出目录
                 filename: 'static/css/style.css'
             }
-        )
+        ),
+        new CssMinimizerPlugin()
     ],
     // 配置开发服务器（打包命令为npx webpack serve）
     // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包
@@ -126,5 +128,5 @@ module.exports = {
     //     open: true
     // },
     // 模式
-    mode: "production"
+    mode: "production" //生产模式默认开启压缩html和js
 }
