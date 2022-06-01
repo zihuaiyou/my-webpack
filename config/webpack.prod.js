@@ -4,6 +4,29 @@ const path = require('path')
 const EslintWebpackPlugin = require('eslint-webpack-plugin');//检查代码格式
 const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入打包好的js文件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');//使html通过link标签的形式引入单独的css文件
+
+/**
+ * 封装一个合并处理样式的loader的函数
+ */
+function getstyleLoader(pre) {
+    return [ //使用loader, 需要按顺序（从下往上执行）
+        // use 可以使用多个loader
+        // 'style-loader', //将js中的css以style标签的形式添加到html中
+        MiniCssExtractPlugin.loader, //不再使用style-loader
+        'css-loader', //将css资源编译呈commonjs模块形式添加到js中
+        {
+            loader: 'postcss-loader', //处理css兼容性问题
+            options: { //配置postcss-loader
+                postcssOptions: {
+                    plugins: [
+                        'postcss-preset-env'//postcss只能预设，能解决绝大多数的兼容性问题
+                    ]
+                }
+            }
+        },
+        pre
+    ].filter(Boolean)
+}
 module.exports = {
     // 入口文件
     entry: "./src/main.js", //相对目录
@@ -24,58 +47,15 @@ module.exports = {
             {
                 test: /\.css$/,  //检测以css结尾的文件(正则)
                 //loader:"xxx" 只能使用一个loader
-                use: [ //使用loader, 需要按顺序（从下往上执行）
-                    // use 可以使用多个loader
-                    // 'style-loader', //将js中的css以style标签的形式添加到html中
-                    MiniCssExtractPlugin.loader, //不再使用style-loader
-                    'css-loader', //将css资源编译呈commonjs模块形式添加到js中
-                    {
-                        loader: 'postcss-loader', //处理css兼容性问题
-                        options: { //配置postcss-loader
-                            postcssOptions: {
-                                plugins: [
-                                    'postcss-preset-env'//postcss只能预设，能解决绝大多数的兼容性问题
-                                ]
-                            }
-                        }
-                    }
-                ]
+                use: getstyleLoader()
             },
             {
                 test: /\.less$/,  //检测以less结尾的文件(正则)
-                use: [ //使用loader, 需要按顺序（从下往上执行）
-                    MiniCssExtractPlugin.loader,
-                    'css-loader', //将css资源编译呈commonjs模块形式添加到js中
-                    {
-                        loader: 'postcss-loader', //处理css兼容性问题
-                        options: { //配置postcss-loader
-                            postcssOptions: {
-                                plugins: [
-                                    'postcss-preset-env'//postcss只能预设，能解决绝大多数的兼容性问题
-                                ]
-                            }
-                        }
-                    },
-                    'less-loader'//将less编译成css文件
-                ]
+                use: getstyleLoader('less-loader')
             },
             {
                 test: /\.s[ac]ss$/,  //检测以sass或scss结尾的文件(正则)
-                use: [ //使用loader, 需要按顺序（从下往上执行）
-                    MiniCssExtractPlugin.loader,
-                    'css-loader', //将css资源编译呈commonjs模块形式添加到js中
-                    {
-                        loader: 'postcss-loader', //处理css兼容性问题
-                        options: { //配置postcss-loader
-                            postcssOptions: {
-                                plugins: [
-                                    'postcss-preset-env'//postcss只能预设，能解决绝大多数的兼容性问题
-                                ]
-                            }
-                        }
-                    },
-                    'sass-loader'//将sass或scss编译成css文件
-                ]
+                use: getstyleLoader('sass-loader')
             },
             {
                 // webpack4使用fileloader和urlloader处理图片
