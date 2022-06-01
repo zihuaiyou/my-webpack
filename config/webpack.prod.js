@@ -29,6 +29,16 @@ module.exports = {
                     // 'style-loader', //将js中的css以style标签的形式添加到html中
                     MiniCssExtractPlugin.loader, //不再使用style-loader
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
+                    {
+                        loader: 'postcss-loader', //处理css兼容性问题
+                        options: { //配置postcss-loader
+                            postcssOptions: {
+                                plugins: [
+                                    'postcss-preset-env'//postcss只能预设，能解决绝大多数的兼容性问题
+                                ]
+                            }
+                        }
+                    }
                 ]
             },
             {
@@ -36,6 +46,16 @@ module.exports = {
                 use: [ //使用loader, 需要按顺序（从下往上执行）
                     MiniCssExtractPlugin.loader,
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
+                    {
+                        loader: 'postcss-loader', //处理css兼容性问题
+                        options: { //配置postcss-loader
+                            postcssOptions: {
+                                plugins: [
+                                    'postcss-preset-env'//postcss只能预设，能解决绝大多数的兼容性问题
+                                ]
+                            }
+                        }
+                    },
                     'less-loader'//将less编译成css文件
                 ]
             },
@@ -44,6 +64,16 @@ module.exports = {
                 use: [ //使用loader, 需要按顺序（从下往上执行）
                     MiniCssExtractPlugin.loader,
                     'css-loader', //将css资源编译呈commonjs模块形式添加到js中
+                    {
+                        loader: 'postcss-loader', //处理css兼容性问题
+                        options: { //配置postcss-loader
+                            postcssOptions: {
+                                plugins: [
+                                    'postcss-preset-env'//postcss只能预设，能解决绝大多数的兼容性问题
+                                ]
+                            }
+                        }
+                    },
                     'sass-loader'//将sass或scss编译成css文件
                 ]
             },
