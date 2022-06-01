@@ -106,7 +106,8 @@ module.exports = {
     devServer: {
         host: 'localhost',
         port: '3000',
-        open: true
+        open: true, //自动打开浏览器
+        hot: true //开启/关闭HMR(只用于开发模式) 对于样式，webpack5 style-loader已经实现了HMR
     },
     // 模式
     mode: "development",
