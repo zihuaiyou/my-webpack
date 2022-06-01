@@ -109,5 +109,6 @@ module.exports = {
         open: true
     },
     // 模式
-    mode: "development"
+    mode: "development",
+    devtool:'cheap-module-source-map'//配置source-map
 }

@@ -7,4 +7,4 @@ import './sass/style2.scss'
 import './css/iconfont.css'
 
 console.log(count(8, 2));
-console.log(sum(1, 2, 3, 4));
+console.log(sum(1, 2, 3, 4)());

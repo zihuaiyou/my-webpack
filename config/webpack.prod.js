@@ -128,5 +128,6 @@ module.exports = {
     //     open: true
     // },
     // 模式
-    mode: "production" //生产模式默认开启压缩html和js
+    mode: "production",//生产模式默认开启压缩html和js
+    devtool: 'source-map'
 }
