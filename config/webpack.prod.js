@@ -107,7 +107,12 @@ module.exports = {
                                     //     // 使用babel插件
                                     //     presets:["@babel/preset-env"] //允许使用最近的js
                                     cacheDirectory: true, //开启缓存模式
-                                    cacheCompression: false //关闭缓存压缩
+                                    cacheCompression: false, //关闭缓存压缩
+                                    /**
+                                     * babel会对文件添加辅助代码，使用@babel/plugin-transform-runtime可以使辅助代码
+                                     * 从@babel/plugin-transform-runtime中引入
+                                     */
+                                    plugins:['@babel/plugin-transform-runtime'] 
                                 }
                             }
                         ]
