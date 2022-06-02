@@ -84,10 +84,12 @@ module.exports = {
                         /**
                          * babel配置可以直接在下面写，也可以在外部文件写
                          */
-                        // options:{
-                        //     // 使用babel插件
-                        //     presets:["@babel/preset-env"] //允许使用最近的js
-                        // }
+                        options: {
+                            //     // 使用babel插件
+                            //     presets:["@babel/preset-env"] //允许使用最近的js
+                            cacheDirectory: true, //开启缓存模式
+                            cacheCompression: false //关闭缓存压缩
+                        }
                     }
                 ]
             }
@@ -100,8 +102,10 @@ module.exports = {
         new EslintWebpackPlugin({
             // 指定检查文件的目录
             context: path.resolve(__dirname, '../src'), //配置文件更换位置绝对路径需要修改
-            exclude: "node_modules" //webpack5默认值
+            exclude: "node_modules",//webpack5默认值
             // include: path.resolve(__dirname, '../src') 插件的options没有include属性
+            cache: true,
+            cacheLocation: path.resolve(__dirname, '../node_modules/.cache/eslintcache') //缓存地址
         }),
         new HtmlWebpackPlugin({
             // 创建以public/index.html为模板的html文件
