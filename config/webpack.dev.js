@@ -6,6 +6,9 @@ const path = require('path')
 //webpack5 使用插件处理eslint(webpack4使用loader)
 const EslintWebpackPlugin = require('eslint-webpack-plugin');//检查代码格式
 const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入打包好的js文件
+const os = require('os');
+const threads = os.cpus().length;
+
 module.exports = {
     // 入口文件
     // 开发模式下相对目录不需要改变（执行配置文件时是在根目录下执行的）
@@ -80,16 +83,27 @@ module.exports = {
                         test: /\.js$/,
                         // exclude: /node_modules/, //不处理node_modules文件
                         include: path.resolve(__dirname, '../src'), //仅处理src下的文件，include和exclude仅能写一个
-                        loader: 'babel-loader',
-                        /**
-                         * babel配置可以直接在下面写，也可以在外部文件写
-                         */
-                        options: {
-                            //     // 使用babel插件
-                            //     presets:["@babel/preset-env"] //允许使用最近的js
-                            cacheDirectory: true, //开启缓存模式
-                            cacheCompression: false //关闭缓存压缩
-                        }
+                        use: [
+                            {
+                                loader: "thread-loader",
+                                options: {
+                                    workers: threads
+                                }
+                            },
+                            {
+                                loader: 'babel-loader',
+                                /**
+                                 * babel配置可以直接在下面写，也可以在外部文件写
+                                 */
+                                options: {
+                                    //     // 使用babel插件
+                                    //     presets:["@babel/preset-env"] //允许使用最近的js
+                                    cacheDirectory: true, //开启缓存模式
+                                    cacheCompression: false //关闭缓存压缩
+                                }
+                            }
+                        ]
+
                     }
                 ]
             }
@@ -105,7 +119,8 @@ module.exports = {
             exclude: "node_modules",//webpack5默认值
             // include: path.resolve(__dirname, '../src') 插件的options没有include属性
             cache: true,
-            cacheLocation: path.resolve(__dirname, '../node_modules/.cache/eslintcache') //缓存地址
+            cacheLocation: path.resolve(__dirname, '../node_modules/.cache/eslintcache'), //缓存地址
+            threads
         }),
         new HtmlWebpackPlugin({
             // 创建以public/index.html为模板的html文件

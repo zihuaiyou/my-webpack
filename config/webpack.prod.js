@@ -5,6 +5,9 @@ const EslintWebpackPlugin = require('eslint-webpack-plugin');//检查代码格�
 const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入打包好的js文件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');//使html通过link标签的形式引入单独的css文件
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');//压缩css
+const os = require('os');
+const threads = os.cpus().length; //获取cpu线程数
+const terserWebpackPlugin = require('terser-webpack-plugin'); //Terser webpack 内置的压缩生产模式js代码段的工具
 
 /**
  * 封装一个合并处理样式的loader的函数
@@ -88,14 +91,27 @@ module.exports = {
                         // babel 使用loader
                         test: /\.js$/,
                         exclude: /node_modules/, //不处理node_modules文件
-                        loader: 'babel-loader',
-                        /**
-                         * babel配置可以直接在下面写，也可以在外部文件写
-                         */
-                        // options:{
-                        //     // 使用babel插件
-                        //     presets:["@babel/preset-env"] //允许使用最近的js
-                        // }
+                        use: [
+                            {
+                                loader: "thread-loader", //开启多线程打包
+                                options: {
+                                    workers: threads,//线程数
+                                }
+                            },
+                            {
+                                loader: 'babel-loader',
+                                /**
+                                 * babel配置可以直接在下面写，也可以在外部文件写
+                                 */
+                                options: {
+                                    //     // 使用babel插件
+                                    //     presets:["@babel/preset-env"] //允许使用最近的js
+                                    cacheDirectory: true, //开启缓存模式
+                                    cacheCompression: false //关闭缓存压缩
+                                }
+                            }
+                        ]
+
                     }
                 ]
             }
@@ -107,7 +123,10 @@ module.exports = {
         new EslintWebpackPlugin({
             // 指定检查文件的目录
             context: path.resolve(__dirname, '../src'),
-            exclude:"node_modules"
+            exclude: "node_modules",
+            cache: true,
+            cacheLocation: path.resolve(__dirname, '../node_modules/.cache/eslintcache'), //缓存地址
+            threads,//开启多线程打包并指定线程数
         }),
         new HtmlWebpackPlugin({
             // 创建以public/index.html为模板的html文件
@@ -120,7 +139,8 @@ module.exports = {
                 filename: 'static/css/style.css'
             }
         ),
-        new CssMinimizerPlugin()
+
+
     ],
     // 配置开发服务器（打包命令为npx webpack serve）
     // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包
@@ -132,6 +152,18 @@ module.exports = {
     //     port: '3000',
     //     open: true
     // },
+    optimization: {
+        minimize: true,
+        // 可以将压缩文件写入到optimization.minimizer中
+        minimizer: [
+            new CssMinimizerPlugin(),
+            new terserWebpackPlugin({ //生产模式默认开启terserWebpackPlugin
+                parallel: threads //Terser开启多线程
+            })]
+
+
+    },
+
     // 模式
     mode: "production",//生产模式默认开启压缩html和js
     devtool: 'source-map'
