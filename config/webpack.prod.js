@@ -4,7 +4,7 @@ const path = require('path')
 const EslintWebpackPlugin = require('eslint-webpack-plugin');//检查代码格式
 const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入打包好的js文件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');//使html通过link标签的形式引入单独的css文件
-const CssMinimizerPlugin  = require('css-minimizer-webpack-plugin');//压缩css
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');//压缩css
 
 /**
  * 封装一个合并处理样式的loader的函数
@@ -46,54 +46,58 @@ module.exports = {
         // 配置规则
         rules: [
             {
-                test: /\.css$/,  //检测以css结尾的文件(正则)
-                //loader:"xxx" 只能使用一个loader
-                use: getstyleLoader()
-            },
-            {
-                test: /\.less$/,  //检测以less结尾的文件(正则)
-                use: getstyleLoader('less-loader')
-            },
-            {
-                test: /\.s[ac]ss$/,  //检测以sass或scss结尾的文件(正则)
-                use: getstyleLoader('sass-loader')
-            },
-            {
-                // webpack4使用fileloader和urlloader处理图片
-                // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
-                // base64:优点：减少网络请求； 缺点：会增加图片的体积
-                test: /\.(png|jpe?g|webp|gif)$/,  //检测以图片扩展名结尾的文件(正则)
-                type: 'asset',  //使低于指定大小的图片转化为base64格式
-                generator: {
-                    // 控制图片资源生成路径
-                    // [hash:8] 文件名取hash值，取前8位
-                    // [ext]取文件之前的扩展名
-                    // [query]取之前的查询参数
-                    filename: "static/imgs/[hash:5][ext][query]"
-                }
-            },
-            {
-                // webpack4使用fileloader和urlloader处理图片
-                // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
-                // base64:优点：减少网络请求； 缺点：会增加图片的体积
-                test: /\.(ttf|woff2?)$/,
-                type: 'asset/resource', //原样打包(处理字体图标、音视频文件等其他资源)
-                generator: {
-                    filename: "static/media/[hash:5][ext][query]"
-                }
-            },
-            {
-                // babel 使用loader
-                test: /\.js$/,
-                exclude: /node_modules/, //不处理node_modules文件
-                loader: 'babel-loader',
-                /**
-                 * babel配置可以直接在下面写，也可以在外部文件写
-                 */
-                // options:{
-                //     // 使用babel插件
-                //     presets:["@babel/preset-env"] //允许使用最近的js
-                // }
+                oneOf: [
+                    {
+                        test: /\.css$/,  //检测以css结尾的文件(正则)
+                        //loader:"xxx" 只能使用一个loader
+                        use: getstyleLoader()
+                    },
+                    {
+                        test: /\.less$/,  //检测以less结尾的文件(正则)
+                        use: getstyleLoader('less-loader')
+                    },
+                    {
+                        test: /\.s[ac]ss$/,  //检测以sass或scss结尾的文件(正则)
+                        use: getstyleLoader('sass-loader')
+                    },
+                    {
+                        // webpack4使用fileloader和urlloader处理图片
+                        // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
+                        // base64:优点：减少网络请求； 缺点：会增加图片的体积
+                        test: /\.(png|jpe?g|webp|gif)$/,  //检测以图片扩展名结尾的文件(正则)
+                        type: 'asset',  //使低于指定大小的图片转化为base64格式
+                        generator: {
+                            // 控制图片资源生成路径
+                            // [hash:8] 文件名取hash值，取前8位
+                            // [ext]取文件之前的扩展名
+                            // [query]取之前的查询参数
+                            filename: "static/imgs/[hash:5][ext][query]"
+                        }
+                    },
+                    {
+                        // webpack4使用fileloader和urlloader处理图片
+                        // webpack 内置了处理图片的loader，(可以将小体积的图片转为base64)
+                        // base64:优点：减少网络请求； 缺点：会增加图片的体积
+                        test: /\.(ttf|woff2?)$/,
+                        type: 'asset/resource', //原样打包(处理字体图标、音视频文件等其他资源)
+                        generator: {
+                            filename: "static/media/[hash:5][ext][query]"
+                        }
+                    },
+                    {
+                        // babel 使用loader
+                        test: /\.js$/,
+                        exclude: /node_modules/, //不处理node_modules文件
+                        loader: 'babel-loader',
+                        /**
+                         * babel配置可以直接在下面写，也可以在外部文件写
+                         */
+                        // options:{
+                        //     // 使用babel插件
+                        //     presets:["@babel/preset-env"] //允许使用最近的js
+                        // }
+                    }
+                ]
             }
         ]
     },
@@ -102,7 +106,8 @@ module.exports = {
         // 插件是构造函数，需要new
         new EslintWebpackPlugin({
             // 指定检查文件的目录
-            context: path.resolve(__dirname, '../src')
+            context: path.resolve(__dirname, '../src'),
+            exclude:"node_modules"
         }),
         new HtmlWebpackPlugin({
             // 创建以public/index.html为模板的html文件
