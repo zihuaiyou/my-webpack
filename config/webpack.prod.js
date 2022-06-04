@@ -9,6 +9,7 @@ const os = require('os');
 const threads = os.cpus().length; //获取cpu线程数
 const terserWebpackPlugin = require('terser-webpack-plugin'); //Terser webpack 内置的压缩生产模式js代码段的工具
 const imageMinimzerPlugin = require('image-minimizer-webpack-plugin');//压缩图片
+const PreloadWebpackPlugin  = require("preload-webpack-plugin"); 
 
 /**
  * 封装一个合并处理样式的loader的函数
@@ -147,8 +148,12 @@ module.exports = {
                 filename: 'static/css/[name].chunk.css'
             }
         ),
-
-
+        new PreloadWebpackPlugin({
+            // preload和prefetch兼容性较差，请谨慎使用
+            // rel: 'preload', //preload 让浏览器立即加载所需资源
+            // as: 'script',
+            rel:'prefetch' //prefetch 让浏览器空闲时加载所需资源
+        })
     ],
     // 配置开发服务器（打包命令为npx webpack serve）
     // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包
