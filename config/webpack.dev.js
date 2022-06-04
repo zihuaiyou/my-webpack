@@ -19,7 +19,9 @@ module.exports = {
         // path: path.resolve(__dirname, "dist"), //绝对目录(所有文件)
         path: undefined,//开发模式下，因为使用了devServer,不需要输出打包文件
         // 输出文件名
-        filename: "static/main.js", //js入口文件的目录
+        filename: "static/js/[name].js", //js入口文件打包输出的文件名
+        chunkFilename:'static/js/[name].chunk.js', //对webpack动态导入的文件重命名，[name]的值为 webpackChunkName的值
+        assetModuleFilename: "static/media/[hash:5][ext][query]", //对type:asset形式处理的图片、字体等文件的统一命名方式
         // 自动清空上次打包的文件
         // clean: true
     },
@@ -60,13 +62,13 @@ module.exports = {
                         // base64:优点：减少网络请求； 缺点：会增加图片的体积
                         test: /\.(png|jpe?g|webp|gif)$/,  //检测以图片扩展名结尾的文件(正则)
                         type: 'asset',  //使低于指定大小的图片转化为base64格式
-                        generator: {
-                            // 控制图片资源生成路径
-                            // [hash:8] 文件名取hash值，取前8位
-                            // [ext]取文件之前的扩展名
-                            // [query]取之前的查询参数
-                            filename: "static/imgs/[hash:5][ext][query]"
-                        }
+                        // generator: {
+                        //     // 控制图片资源生成路径
+                        //     // [hash:8] 文件名取hash值，取前8位
+                        //     // [ext]取文件之前的扩展名
+                        //     // [query]取之前的查询参数
+                        //     filename: "static/imgs/[hash:5][ext][query]"
+                        // }
                     },
                     {
                         // webpack4使用fileloader和urlloader处理图片
@@ -74,9 +76,9 @@ module.exports = {
                         // base64:优点：减少网络请求； 缺点：会增加图片的体积
                         test: /\.(ttf|woff2?)$/,
                         type: 'asset/resource', //原样打包(处理字体图标、音视频文件等其他资源)
-                        generator: {
-                            filename: "static/media/[hash:5][ext][query]"
-                        }
+                        // generator: {
+                        //     filename: "static/media/[hash:5][ext][query]"
+                        // }
                     },
                     {
                         // babel 使用loader
