@@ -14,5 +14,6 @@ module.exports = {
     // 具体检查选项
     rules: {
         'no-var': 'error'//不能使用var声明变量
-    }
+    },
+    plugins:['import'] //解决eslint import动态导入报错问题
 }

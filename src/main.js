@@ -7,10 +7,17 @@ import './sass/style2.scss'
 import './css/iconfont.css'
 
 console.log(count(8, 2));
-console.log(sum(1, 2, 3, 4,5));
+console.log(sum(1, 2, 3, 4, 5));
 
 // 对js实现HMR(以后react项目可以使用react-hot-loader来实现)
 if (module.hot) {
     module.hot.accept('./js/count');
     module.hot.accept('./js/sum');
+}
+
+document.body.querySelector(".btn").onclick = () => {
+    // import动态导入
+    import('./js/math').then(({mul}) => {
+        console.log(mul(2,3));
+    })
 }
