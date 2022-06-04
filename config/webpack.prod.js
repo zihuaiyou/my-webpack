@@ -41,7 +41,8 @@ module.exports = {
         // 生产模式需要输出打包文件
         path: path.resolve(__dirname, "../dist"), //绝对目录(所有文件)
         // 输出文件名
-        filename: "static/main.js", //js入口文件的目录
+        filename: "static/[name].js", //js入口文件的目录
+        chunkFilename:'static/js/[name].chunk.js', //对webpack动态导入的文件重命名，[name]的值为 webpackChunkName的值
         // 自动清空上次打包的文件
         clean: true
     },

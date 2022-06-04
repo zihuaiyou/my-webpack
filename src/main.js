@@ -17,7 +17,8 @@ if (module.hot) {
 
 document.body.querySelector(".btn").onclick = () => {
     // import动态导入
-    import('./js/math').then(({mul}) => {
+// /*webpackChunkName:'math' */ webpack魔法命名，对动态导入的文件的命名，在chunkFileName中为[name]的值
+    import(/*webpackChunkName:'math' */ './js/math').then(({mul}) => {
         console.log(mul(2,3));
     })
 }
