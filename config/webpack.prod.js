@@ -9,7 +9,7 @@ const os = require('os');
 const threads = os.cpus().length; //获取cpu线程数
 const terserWebpackPlugin = require('terser-webpack-plugin'); //Terser webpack 内置的压缩生产模式js代码段的工具
 const imageMinimzerPlugin = require('image-minimizer-webpack-plugin');//压缩图片
-const PreloadWebpackPlugin  = require("preload-webpack-plugin"); 
+// const PreloadWebpackPlugin  = require("preload-webpack-plugin"); 
 
 /**
  * 封装一个合并处理样式的loader的函数
@@ -42,8 +42,9 @@ module.exports = {
         // 生产模式需要输出打包文件
         path: path.resolve(__dirname, "../dist"), //绝对目录(所有文件)
         // 输出文件名
-        filename: "static/js/[name].js", //js入口文件打包输出的文件名
-        chunkFilename:'static/js/[name].chunk.js', //对webpack动态导入的文件重命名，[name]的值为 webpackChunkName的值
+        // 配置contenthash，文件内容变化，hash值就变化，方便浏览器判断是否走缓存
+        filename: "static/js/[name].[contenthash:8].js", //js入口文件打包输出的文件名
+        chunkFilename:'static/js/[name].chunk.[contenthash:8].js', //对webpack动态导入的文件重命名，[name]的值为 webpackChunkName的值
         assetModuleFilename: "static/media/[hash:5][ext][query]", //对type:asset形式处理的图片、字体等文件的统一命名方式
         // 自动清空上次打包的文件
         clean: true
@@ -145,15 +146,16 @@ module.exports = {
         new MiniCssExtractPlugin(
             {
                 // 指定css文件输出目录
-                filename: 'static/css/[name].chunk.css'
+                filename: 'static/css/[name].[contenthash:8].css',
+                chunkFilename:'static/css/[name].chunk.[contenthash:8].css'
             }
         ),
-        new PreloadWebpackPlugin({
-            // preload和prefetch兼容性较差，请谨慎使用
-            // rel: 'preload', //preload 让浏览器立即加载所需资源
-            // as: 'script',
-            rel:'prefetch' //prefetch 让浏览器空闲时加载所需资源
-        })
+        // new PreloadWebpackPlugin({
+        //     // preload和prefetch兼容性较差，请谨慎使用
+        //     // rel: 'preload', //preload 让浏览器立即加载所需资源
+        //     // as: 'script',
+        //     rel:'prefetch' //prefetch 让浏览器空闲时加载所需资源
+        // })
     ],
     // 配置开发服务器（打包命令为npx webpack serve）
     // 开发服务器不会输出资源文件(dist)，代码在内存中编译打包
@@ -204,6 +206,10 @@ module.exports = {
         splitChunks: { 
             //提取重复代码，将引入的代码分割成独立的文件，需要时在导入
             chunks: "all"
+        },
+        // 在入口文件中提取runtime至独立的runtime文件，避免打包后输出文件因动态导入文件变化而变化
+        runtimeChunk:{
+            name:(entryPoint) => `runtime~${entryPoint.name}.js`
         }
     },
 
