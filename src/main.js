@@ -17,9 +17,9 @@ if (module.hot) {
 
 document.body.querySelector(".btn").onclick = () => {
     // import动态导入
-// /*webpackChunkName:'math' */ webpack魔法命名，对动态导入的文件的命名，在chunkFileName中为[name]的值
-    import(/*webpackChunkName:'math' */ './js/math').then(({mul}) => {
-        console.log(mul(2,3));
+    // /*webpackChunkName:'math' */ webpack魔法命名，对动态导入的文件的命名，在chunkFileName中为[name]的值
+    import(/*webpackChunkName:'math' */ './js/math').then(({ mul }) => {
+        console.log(mul(2, 3));
     })
 }
 
@@ -28,3 +28,14 @@ new Promise(resolve => {
         resolve()
     }, 1000);
 })
+
+// 注册serviceWorker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(registration => {
+            console.log('SW registered: ', registration);
+        }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+        });
+    });
+}
