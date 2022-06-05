@@ -22,3 +22,9 @@ document.body.querySelector(".btn").onclick = () => {
         console.log(mul(2,3));
     })
 }
+
+new Promise(resolve => {
+    setTimeout(() => {
+        resolve()
+    }, 1000);
+})
