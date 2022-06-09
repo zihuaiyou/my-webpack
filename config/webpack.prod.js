@@ -6,10 +6,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');//使html自动引入�
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');//使html通过link标签的形式引入单独的css文件
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');//压缩css
 const os = require('os');
-const threads = os.cpus().length; //获取cpu线程数
 const terserWebpackPlugin = require('terser-webpack-plugin'); //Terser webpack 内置的压缩生产模式js代码段的工具
 const imageMinimzerPlugin = require('image-minimizer-webpack-plugin');//压缩图片
+
+const threads = os.cpus().length; //获取cpu线程数
 // const PreloadWebpackPlugin  = require("preload-webpack-plugin"); 
+/**
+ * PWA应用借助Service Workers 技术可以离线运行，
+ * 引入workbox-webpack-plugin为web app提供离线支持
+ */
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 /**
  * 封装一个合并处理样式的loader的函数
@@ -44,7 +50,7 @@ module.exports = {
         // 输出文件名
         // 配置contenthash，文件内容变化，hash值就变化，方便浏览器判断是否走缓存
         filename: "static/js/[name].[contenthash:8].js", //js入口文件打包输出的文件名
-        chunkFilename:'static/js/[name].chunk.[contenthash:8].js', //对webpack动态导入的文件重命名，[name]的值为 webpackChunkName的值
+        chunkFilename: 'static/js/[name].chunk.[contenthash:8].js', //对webpack动态导入的文件重命名，[name]的值为 webpackChunkName的值
         assetModuleFilename: "static/media/[hash:5][ext][query]", //对type:asset形式处理的图片、字体等文件的统一命名方式
         // 自动清空上次打包的文件
         clean: true
@@ -147,9 +153,15 @@ module.exports = {
             {
                 // 指定css文件输出目录
                 filename: 'static/css/[name].[contenthash:8].css',
-                chunkFilename:'static/css/[name].chunk.[contenthash:8].css'
+                chunkFilename: 'static/css/[name].chunk.[contenthash:8].css'
             }
         ),
+        new WorkboxPlugin.GenerateSW({
+            // 这些选项帮助快速启用 ServiceWorkers
+            // 不允许遗留任何“旧的” ServiceWorkers
+            clientsClaim: true,
+            skipWaiting: true,
+        }),
         // new PreloadWebpackPlugin({
         //     // preload和prefetch兼容性较差，请谨慎使用
         //     // rel: 'preload', //preload 让浏览器立即加载所需资源
@@ -203,13 +215,13 @@ module.exports = {
                 },
             })
         ],
-        splitChunks: { 
+        splitChunks: {
             //提取重复代码，将引入的代码分割成独立的文件，需要时在导入
             chunks: "all"
         },
         // 在入口文件中提取runtime至独立的runtime文件，避免打包后输出文件因动态导入文件变化而变化
-        runtimeChunk:{
-            name:(entryPoint) => `runtime~${entryPoint.name}.js`
+        runtimeChunk: {
+            name: (entryPoint) => `runtime~${entryPoint.name}.js`
         }
     },
 
